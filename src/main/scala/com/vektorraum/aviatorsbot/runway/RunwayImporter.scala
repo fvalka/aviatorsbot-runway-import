@@ -40,11 +40,8 @@ object RunwayImporter {
   def main(args: Array[String]): Unit = {
     val fileListPattern = "<a href=\"([A-Za-z]{2}_wpt.aip)\">".r
     val dirUrl = "https://www.openaip.net/customer_export_sdakjasd1fij1gnfvAFD32f/"
-    //val fileList = Source.fromURL(dirUrl).getLines().mkString
+    val fileList = Source.fromURL(dirUrl).getLines().mkString
 
-    // FOR DEBUGGING ONLY
-    val fileList = "\n<tr><td valign=\"top\"><img src=\"/icons/unknown.gif\" alt=\"[   ]\"></td><td><a href=\"at_wpt.aip\">at_wpt.aip</a></td><td align=\"right\">2017-05-21 04:01  </td><td align=\"right\"> 85K</td><td>&nbsp;</td></tr>"
-    //println(fileList)
 
     logger.info("Converting files")
     val airports = fileListPattern.findAllIn(fileList).matchData flatMap { m =>
