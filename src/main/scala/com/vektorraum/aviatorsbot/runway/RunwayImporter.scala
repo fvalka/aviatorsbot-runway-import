@@ -1,8 +1,12 @@
 package com.vektorraum.aviatorsbot.runway
 
+import java.io.File
+import java.time.LocalDate
+
 import com.typesafe.scalalogging.Logger
 import com.vektorraum.aviatorsbot.runway.persistence.{AirfieldsDAO, Db}
 import com.vektorraum.aviatorsbot.runway.persistence.model.{Airfield, Runway}
+import org.orekit.models.earth.GeoMagneticFieldFactory
 import org.xml.sax.SAXParseException
 
 import scala.concurrent.Await
@@ -16,6 +20,21 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * Created by fvalka on 25.05.2017.
   */
 object RunwayImporter {
+  import org.orekit.models.earth.GeoMagneticField
+  import org.orekit.models.earth.GeoMagneticFieldFactory
+
+  import org.orekit.data.DataProvidersManager
+  import org.orekit.data.DirectoryCrawler
+
+  val orekitData = new File("data/")
+  val manager: DataProvidersManager = DataProvidersManager.getInstance
+  manager.addProvider(new DirectoryCrawler(orekitData))
+
+  val decimalYear: Double = GeoMagneticField.getDecimalYear(
+    LocalDate.now().getDayOfMonth, LocalDate.now().getMonthValue, LocalDate.now().getYear)
+
+  val geoMagneticModel: GeoMagneticField = GeoMagneticFieldFactory.getWMM(decimalYear)
+
   val logger = Logger(getClass)
 
   def main(args: Array[String]): Unit = {
@@ -66,6 +85,12 @@ object RunwayImporter {
     val icao = (xml \ "ICAO").text
     val name = (xml \ "NAME").text
 
+    val lat = (xml \ "GEOLOCATION" \ "LAT").text toDouble
+    val lon = (xml \ "GEOLOCATION" \ "LON").text toDouble
+    val elev_m = (xml \ "GEOLOCATION" \ "ELEV").text toDouble
+
+    val mag_var = geoMagneticModel.calculateField(lat, lon, elev_m/1000.0).getDeclination
+
     val runways = xml \ "RWY" filter { rwy =>
       (rwy \ "@OPERATIONS").text == "ACTIVE"
     } map { rwy =>
@@ -78,7 +103,7 @@ object RunwayImporter {
       Runway(name, directions)
     }
 
-    Airfield(icao, name, runways)
+    Airfield(icao, name, mag_var, runways)
   }
 
 }

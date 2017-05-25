@@ -41,5 +41,12 @@
     <orderEntry type="library" name="SBT: com.typesafe.scala-logging:scala-logging_2.12:3.5.0:jar" level="project" />
     <orderEntry type="library" name="SBT: org.scala-lang:scala-reflect:2.12.2:jar" level="project" />
     <orderEntry type="library" name="SBT: org.slf4j:slf4j-api:1.7.21:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.hipparchus:hipparchus-core:1.0:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.hipparchus:hipparchus-fitting:1.0:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.hipparchus:hipparchus-geometry:1.0:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.hipparchus:hipparchus-ode:1.0:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.hipparchus:hipparchus-optim:1.0:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.hipparchus:hipparchus-stat:1.0:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.orekit:orekit:8.0:jar" level="project" />
   </component>
 </module>

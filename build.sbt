@@ -15,3 +15,7 @@ libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
 
 libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0"
 libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.1.7"
+
+
+// Magnetic Deviation
+libraryDependencies += "org.orekit" % "orekit" % "8.0"
