@@ -35,7 +35,11 @@ object RunwayImporter {
         case e: SAXParseException => logger.warn(s"Could not parse file $fileName")
           None
       }
-    }
+    } filter { airfield =>
+      airfield.runways.nonEmpty
+    } toList
+
+    logger.debug(airports mkString "\n")
   }
 
   def toCaseClass(xml: NodeSeq): Airfield = {
