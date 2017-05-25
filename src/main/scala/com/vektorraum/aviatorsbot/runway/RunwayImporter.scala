@@ -1,11 +1,16 @@
 package com.vektorraum.aviatorsbot.runway
 
 import com.typesafe.scalalogging.Logger
+import com.vektorraum.aviatorsbot.runway.persistence.{AirfieldsDAO, Db}
 import com.vektorraum.aviatorsbot.runway.persistence.model.{Airfield, Runway}
 import org.xml.sax.SAXParseException
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
 import scala.io.Source
+import scala.util.Success
 import scala.xml.{Elem, NodeSeq}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
   * Created by fvalka on 25.05.2017.
@@ -39,7 +44,22 @@ object RunwayImporter {
       airfield.runways.nonEmpty
     } toList
 
-    logger.debug(airports mkString "\n")
+    logger.info(s"Found ${airports.size} airfields")
+
+    logger.info("Inserting airfields into mongodb")
+    val insertFuture = AirfieldsDAO.insertAirfields(airports)
+    val insertResult = Await.result(insertFuture, 2 minutes)
+    logger.info(s"Insert completed with code: ${insertResult.code} and ${insertResult.writeErrors} write errors")
+
+    if(insertResult.ok) {
+      logger.info("Renaming collections to put data live")
+      val putAndCloseFuture = Db.putDataLive() andThen {
+        case _ => logger.info("Closing database connection")
+           Db.close()
+      }
+      Await.result(putAndCloseFuture, 30 seconds)
+    }
+
   }
 
   def toCaseClass(xml: NodeSeq): Airfield = {
