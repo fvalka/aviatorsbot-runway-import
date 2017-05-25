@@ -27,7 +27,7 @@ object Db {
   // Database and collections: Get references
   val futureConnection = Future.fromTry(connection)
 
-  def db1: Future[DefaultDB] = futureConnection.flatMap(_.database("aviatorsbot"))
+  def aviatorsDb: Future[DefaultDB] = futureConnection.flatMap(_.database("aviatorsbot"))
   def adminDb: Future[DefaultDB] = futureConnection.flatMap(_.database("admin"))
 
   def putDataLive(): Future[UnitBox.type] = {

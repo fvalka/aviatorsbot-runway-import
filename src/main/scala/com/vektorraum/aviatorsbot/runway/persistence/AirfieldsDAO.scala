@@ -12,7 +12,7 @@ import scala.concurrent.Future
   * Created by fvalka on 25.05.2017.
   */
 object AirfieldsDAO {
-  def collection: Future[BSONCollection] = Db.db1.map(_.collection("airfields_new"))
+  def collection: Future[BSONCollection] = Db.aviatorsDb.map(_.collection("airfields_new"))
   implicit def runwayWriter: BSONDocumentWriter[Runway] = Macros.writer[Runway]
   implicit def airfieldsWriter: BSONDocumentWriter[Airfield] = Macros.writer[Airfield]
 
