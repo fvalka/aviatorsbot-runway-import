@@ -26,20 +26,7 @@ object RunwayImporter {
   import org.orekit.data.DataProvidersManager
   import org.orekit.data.DirectoryCrawler
 
-  val numWorkers = sys.runtime.availableProcessors
-  val queueCapacity = 100
-  implicit val ec = ExecutionContext.fromExecutorService(
-    new ThreadPoolExecutor(
-      numWorkers, numWorkers,
-      0L, TimeUnit.SECONDS,
-      new ArrayBlockingQueue[Runnable](queueCapacity) {
-        override def offer(e: Runnable) = {
-          put(e); // may block if waiting for empty room
-          true
-        }
-      }
-    )
-  )
+  import ExecutionContext.Implicits.global
 
   val orekitData = new File("data/")
   val manager: DataProvidersManager = DataProvidersManager.getInstance
@@ -88,7 +75,7 @@ object RunwayImporter {
         case _ => logger.info("Closing database connection")
            Db.close()
       }
-      Await.result(putAndCloseFuture, 60 seconds)
+      Await.result(putAndCloseFuture, 180 seconds)
     }
 
   }

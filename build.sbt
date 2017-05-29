@@ -34,3 +34,8 @@ mappings in Universal <+= (packageBin in Compile, baseDirectory ) map { (_, base
   val conf = base / "data" / "WMM.COF"
   conf -> "data/WMM.COF"
 }
+
+javaOptions in Universal ++= Seq(
+  // -J params will be added as jvm parameters
+  "-J-Xmx1024m"
+)
