@@ -64,16 +64,17 @@ object RunwayImporter {
 
     logger.info("Inserting airfields into mongodb")
     val insertFuture = AirfieldsDAO.insertAirfields(airports)
-    val insertResult = Await.result(insertFuture, 2 minutes)
+    val insertResult = Await.result(insertFuture, 5 minutes)
     logger.info(s"Insert completed with code: ${insertResult.code} and ${insertResult.writeErrors} write errors")
 
     if(insertResult.ok) {
       logger.info("Renaming collections to put data live")
       val putAndCloseFuture = Db.putDataLive() andThen {
         case _ => logger.info("Closing database connection")
+          Thread.sleep(5000)
            Db.close()
       }
-      Await.result(putAndCloseFuture, 30 seconds)
+      Await.result(putAndCloseFuture, 120 seconds)
     }
 
   }
