@@ -1,3 +1,4 @@
+
 name := "aviatorsbot-runway-import"
 
 version := "1.0"
@@ -19,3 +20,17 @@ libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.1.7"
 
 // Magnetic Deviation
 libraryDependencies += "org.orekit" % "orekit" % "8.0"
+
+enablePlugins(JavaAppPackaging)
+enablePlugins(DebianPlugin)
+
+mainClass in Compile := Some("com.vektorraum.aviatorsbot.runway.RunwayImporter")
+
+maintainer in Linux := "Fabian Valka <fvalka@vektorraum.com>"
+packageSummary in Linux := "AviatorsBot runway import"
+packageDescription := "Imports runway information from the OpenAIP"
+
+mappings in Universal <+= (packageBin in Compile, baseDirectory ) map { (_, base) =>
+  val conf = base / "data" / "WMM.COF"
+  conf -> "data/WMM.COF"
+}
