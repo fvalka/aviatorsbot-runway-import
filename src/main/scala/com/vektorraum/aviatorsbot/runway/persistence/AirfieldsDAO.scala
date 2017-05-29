@@ -2,7 +2,7 @@ package com.vektorraum.aviatorsbot.runway.persistence
 
 import com.vektorraum.aviatorsbot.runway.persistence.model.{Airfield, Runway}
 import reactivemongo.api.collections.bson.BSONCollection
-import reactivemongo.api.commands.MultiBulkWriteResult
+import reactivemongo.api.commands.{MultiBulkWriteResult, WriteResult}
 import reactivemongo.bson.{BSONDocumentWriter, Macros}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -20,6 +20,12 @@ object AirfieldsDAO {
     collection flatMap { collection =>
       val airfieldsAsDoc = airfields.map(implicitly[collection.ImplicitlyDocumentProducer](_))
       collection.bulkInsert(ordered = false)(airfieldsAsDoc: _*)
+    }
+  }
+
+  def insertAirfield(airfield: Airfield): Future[WriteResult] = {
+    collection flatMap { collection =>
+      collection.insert(airfield)
     }
   }
 
