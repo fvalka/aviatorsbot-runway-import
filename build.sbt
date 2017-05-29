@@ -29,6 +29,7 @@ mainClass in Compile := Some("com.vektorraum.aviatorsbot.runway.RunwayImporter")
 maintainer in Linux := "Fabian Valka <fvalka@vektorraum.com>"
 packageSummary in Linux := "AviatorsBot runway import"
 packageDescription := "Imports runway information from the OpenAIP"
+packageName in Universal := s"${name.value}"
 
 mappings in Universal <+= (packageBin in Compile, baseDirectory ) map { (_, base) =>
   val conf = base / "data" / "WMM.COF"
