@@ -72,7 +72,7 @@ object RunwayImporter {
       val putAndCloseFuture = Db.putDataLive() andThen {
         case _ => logger.info("Closing database connection")
           Thread.sleep(5000)
-           Db.close()
+           Await.result(Db.close(), 120 seconds)
       }
       Await.result(putAndCloseFuture, 120 seconds)
     }

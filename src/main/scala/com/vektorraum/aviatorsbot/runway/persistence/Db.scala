@@ -9,6 +9,8 @@ import reactivemongo.bson.{BSONDocumentReader, BSONDocumentWriter, Macros, docum
 import reactivemongo.api.commands.bson.BSONRenameCollectionImplicits._
 import reactivemongo.api.commands.bson.CommonImplicits._
 
+import scala.concurrent.duration._
+
 import scala.concurrent.Future
 
 /**
@@ -37,11 +39,11 @@ object Db {
     }
   }
 
-  def close(): Unit = {
-
-    futureConnection map { conn =>
-      conn.close()
-      driver.close()
+  def close(): Future[Unit] = {
+    futureConnection flatMap  { conn =>
+      conn.askClose()(timeout = 120 seconds) map { _ =>
+        driver.close()
+      }
     }
   }
 
