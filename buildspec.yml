@@ -3,17 +3,19 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo Installing additional packages
-      - apt-get -y install dpkg-sig lintian fakeroot
+    - echo Updating package database
+    - apt-get update
+    - echo Installing additional packages
+    - apt-get -y install dpkg-sig lintian fakeroot mongodb-server
   build:
     commands:
-      - echo Build started on `date`
-      - echo Run the test and package the code...
-      - sbt compile && sbt test && sbt debian:packageBin
-      - echo Build completed on `date`
+    - echo Build started on `date`
+    - echo Run the test and package the code...
+    - sbt compile && sbt test && sbt debian:packageBin
+    - echo Build completed on `date`
 artifacts:
   files:
-    - target/aviatorsbot-runway-import_1.0_all.deb
-    - scripts/before_install.sh
-    - scripts/install_package.sh
-    - appspec.yml
+  - target/aviatorsbot-runway-import_1.0_all.deb
+  - scripts/before_install.sh
+  - scripts/install_package.sh
+  - appspec.yml
