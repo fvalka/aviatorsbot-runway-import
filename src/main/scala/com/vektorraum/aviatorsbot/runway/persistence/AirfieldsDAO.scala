@@ -3,6 +3,7 @@ package com.vektorraum.aviatorsbot.runway.persistence
 import com.vektorraum.aviatorsbot.runway.persistence.model.{Airfield, Coordinates, CoordinatesWriter, Runway}
 import reactivemongo.api.collections.bson.BSONCollection
 import reactivemongo.api.commands.{MultiBulkWriteResult, WriteResult}
+import reactivemongo.api.indexes.{Index, IndexType}
 import reactivemongo.bson.{BSONArray, BSONDocument, BSONDocumentWriter, Macros}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -20,7 +21,10 @@ object AirfieldsDAO {
   def insertAirfields(airfields: List[Airfield]): Future[MultiBulkWriteResult] = {
     collection flatMap { collection =>
       val airfieldsAsDoc = airfields.map(implicitly[collection.ImplicitlyDocumentProducer](_))
-      collection.bulkInsert(ordered = false)(airfieldsAsDoc: _*)
+      collection.bulkInsert(ordered = false)(airfieldsAsDoc: _*) map { writeResult =>
+        collection.indexesManager.ensure(Index(Seq("coordinates" -> IndexType.Geo2DSpherical)))
+        writeResult
+      }
     }
   }
 
