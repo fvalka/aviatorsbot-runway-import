@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 import com.typesafe.scalalogging.Logger
 import com.vektorraum.aviatorsbot.runway.persistence.{AirfieldsDAO, Db}
-import com.vektorraum.aviatorsbot.runway.persistence.model.{Airfield, Runway}
+import com.vektorraum.aviatorsbot.runway.persistence.model.{Airfield, Coordinates, Runway}
 import org.orekit.models.earth.GeoMagneticFieldFactory
 import org.xml.sax.SAXParseException
 
@@ -101,7 +101,9 @@ object RunwayImporter {
       Runway(name, directions)
     }
 
-    Airfield(icao, name, mag_var, runways)
+    val coordinates = Coordinates(lon, lat)
+
+    Airfield(icao, name, mag_var, runways, coordinates)
   }
 
 }

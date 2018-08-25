@@ -1,9 +1,9 @@
 package com.vektorraum.aviatorsbot.runway.persistence
 
-import com.vektorraum.aviatorsbot.runway.persistence.model.{Airfield, Runway}
+import com.vektorraum.aviatorsbot.runway.persistence.model.{Airfield, Coordinates, CoordinatesWriter, Runway}
 import reactivemongo.api.collections.bson.BSONCollection
 import reactivemongo.api.commands.{MultiBulkWriteResult, WriteResult}
-import reactivemongo.bson.{BSONDocumentWriter, Macros}
+import reactivemongo.bson.{BSONArray, BSONDocument, BSONDocumentWriter, Macros}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -15,6 +15,7 @@ object AirfieldsDAO {
   def collection: Future[BSONCollection] = Db.aviatorsDb.map(_.collection("airfields_new"))
   implicit def runwayWriter: BSONDocumentWriter[Runway] = Macros.writer[Runway]
   implicit def airfieldsWriter: BSONDocumentWriter[Airfield] = Macros.writer[Airfield]
+  implicit def coordinatesWriter: BSONDocumentWriter[Coordinates] = CoordinatesWriter
 
   def insertAirfields(airfields: List[Airfield]): Future[MultiBulkWriteResult] = {
     collection flatMap { collection =>
